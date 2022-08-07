@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  cassandra:
+    image: cassandra:4.0
+    ports:
+#      - "7199:7199" # JMX
+    # - "7000:7000" # cluster communication
+#      - "7001:7001" # cluster communication (SSL)
+    - "9042:9042" # native protocol clients
+    - "9160:9160" # thrift clients
+    volumes:
+      - ./cassandra/config/collectd.cassandra.conf:/etc/collectd/collectd.conf
+#      - ./cassandra/config/graphite.cassandra.yaml:/etc/cassandra/graphite.yaml
+#      - ./cassandra/config/filebeat.yml:/etc/filebeat/filebeat.yml
+      - ./cassandra/config/prometheus.yml:/prometheus/prometheus.yml
+      # - ./data/cassandra:/var/lib/cassandra
+  cqlsh:
+    image: cassandra:4.0
+    entrypoint: cqlsh cassandra
+    volumes:
+      - ./cassandra/schema.cql:/schema.cql
+
+volumes:
+  cassandra_data:
+    driver: local
+  cassandra2_data:
+    driver: local
